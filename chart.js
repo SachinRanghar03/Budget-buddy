@@ -1,24 +1,38 @@
 let chart;
 
-function updateChart(data) {
-  const totals = {};
-  data.forEach(t => {
-    if (!totals[t.category]) totals[t.category] = 0;
-    totals[t.category] += Math.abs(t.amount);
+function updateChart(filtered) {
+  const ctx = document.getElementById('chart').getContext('2d');
+  const categorySums = {};
+
+  filtered.forEach(t => {
+    const cat = t.category;
+    if (!categorySums[cat]) categorySums[cat] = 0;
+    categorySums[cat] += t.amount;
   });
 
-  const ctx = document.getElementById('chart').getContext('2d');
+  const labels = Object.keys(categorySums);
+  const data = Object.values(categorySums).map(Math.abs);
+
   if (chart) chart.destroy();
 
   chart = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: Object.keys(totals),
+      labels,
       datasets: [{
-        label: 'Expenses by Category',
-        data: Object.values(totals),
-        backgroundColor: ['#f94144', '#f3722c', '#f9c74f', '#90be6d', '#577590'],
+        data,
+        backgroundColor: ['#4caf50', '#f44336', '#2196f3', '#ff9800', '#9c27b0']
       }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        title: {
+          display: true,
+          text: 'Expenses by Category'
+        }
+      }
     }
   });
 }
