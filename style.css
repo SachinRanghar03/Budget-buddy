@@ -1,70 +1,71 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f3f3f3;
-  margin: 0;
-  padding: 0;
-}
-
-.container {
-  max-width: 400px;
-  margin: 40px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px #ccc;
-}
-
-h1 {
-  text-align: center;
-  color: #333;
-}
-
-.balance {
-  text-align: center;
-  font-size: 24px;
-  margin: 10px 0;
-}
-
-.summary {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-form input, form select, form button {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-}
-
-.transactions {
-  list-style: none;
-  padding: 0;
-}
-
-.transactions li {
-  padding: 10px;
-  margin: 5px 0;
-  background: #eee;
-  display: flex;
-  justify-content: space-between;
-  border-left: 5px solid;
-}
-
-.transactions .plus {
-  border-color: green;
-}
-
-.transactions .minus {
-  border-color: red;
-}
-
-.filter {
-  display: flex;
-  gap: 10px;
-  margin: 15px 0;
-}
-
-button {
-  margin-top: 10px;
-}
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 400px;
+    margin: 40px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ccc;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .balance {
+    text-align: center;
+    font-size: 24px;
+    margin: 10px 0;
+  }
+  
+  .summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  form input, form select, form button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+  }
+  
+  .transactions {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .transactions li {
+    padding: 10px;
+    margin: 5px 0;
+    background: #eee;
+    display: flex;
+    justify-content: space-between;
+    border-left: 5px solid;
+  }
+  
+  .transactions .plus {
+    border-color: green;
+  }
+  
+  .transactions .minus {
+    border-color: red;
+  }
+  
+  .filter {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+  }
+  
+  button {
+    margin-top: 10px;
+  }
+  
