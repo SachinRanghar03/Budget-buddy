@@ -1,44 +1,54 @@
-const balance = document.getElementById('balance');
-const income = document.getElementById('income');
-const expense = document.getElementById('expense');
-const list = document.getElementById('list');
-const form = document.getElementById('transaction-form');
-const text = document.getElementById('text');
-const amount = document.getElementById('amount');
-const date = document.getElementById('date');
-const category = document.getElementById('category');
-const filterCategory = document.getElementById('filter-category');
-const filterMonth = document.getElementById('filter-month');
-
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
-form.addEventListener('submit', addTransaction);
-filterCategory.addEventListener('change', init);
-filterMonth.addEventListener('change', init);
-
 function generateID() {
-  return Date.now();
+  return Math.floor(Math.random() * 1000000);
 }
 
 function addTransaction(e) {
   e.preventDefault();
+
+  const text = document.getElementById("text").value;
+  const amount = +document.getElementById("amount").value;
+  const type = document.getElementById("type").value;
+  const category = document.getElementById("category").value;
+  const date = document.getElementById("date").value || new Date().toISOString().split('T')[0];
+
   const transaction = {
     id: generateID(),
-    text: text.value,
-    amount: +amount.value,
-    date: date.value,
-    category: category.value
+    text,
+    amount: type === "expense" ? -amount : amount,
+    type,
+    category,
+    date
   };
+
   transactions.push(transaction);
   localStorage.setItem('transactions', JSON.stringify(transactions));
-  form.reset();
-  init();
+  updateUI();
+  document.getElementById("transaction-form").reset();
 }
 
-function removeTransaction(id) {
-  transactions = transactions.filter(t => t.id !== id);
-  localStorage.setItem('transactions', JSON.stringify(transactions));
-  init();
+function updateUI() {
+  const list = document.getElementById("transaction-list");
+  list.innerHTML = "";
+
+  const filtered = getFilteredTransactions();
+
+  filtered.forEach(addTransactionDOM);
+
+  const income = filtered
+    .filter(t => t.amount > 0)
+    .reduce((sum, t) => sum + t.amount, 0);
+  const expense = filtered
+    .filter(t => t.amount < 0)
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  document.getElementById("income").innerText = income.toFixed(2);
+  document.getElementById("expense").innerText = Math.abs(expense).toFixed(2);
+  document.getElementById("balance").innerText = (income + expense).toFixed(2);
+
+  updateChart(filtered);
+  populateFilters();
 }
 
 function addTransactionDOM(transaction) {
@@ -46,41 +56,49 @@ function addTransactionDOM(transaction) {
   const item = document.createElement('li');
   item.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
   item.innerHTML = `
-    ${transaction.text} (${transaction.category}) - ${transaction.date} 
-    <span>${sign}₹${Math.abs(transaction.amount)}</span>
+    ${transaction.text} (₹${Math.abs(transaction.amount)} | ${transaction.category} | ${transaction.date})
     <button onclick="removeTransaction(${transaction.id})">❌</button>
   `;
-  list.appendChild(item);
+  document.getElementById("transaction-list").appendChild(item);
 }
 
-function updateValues(filtered) {
-  const amounts = filtered.map(t => t.amount);
-  const total = amounts.reduce((acc, val) => acc + val, 0).toFixed(2);
-  const incomeAmt = amounts.filter(val => val > 0).reduce((a, b) => a + b, 0).toFixed(2);
-  const expenseAmt = (amounts.filter(val => val < 0).reduce((a, b) => a + b, 0) * -1).toFixed(2);
-
-  balance.textContent = total;
-  income.textContent = incomeAmt;
-  expense.textContent = expenseAmt;
+function removeTransaction(id) {
+  transactions = transactions.filter(t => t.id !== id);
+  localStorage.setItem('transactions', JSON.stringify(transactions));
+  updateUI();
 }
 
-function applyFilters() {
-  let filtered = [...transactions];
-  if (filterCategory.value) {
-    filtered = filtered.filter(t => t.category === filterCategory.value);
-  }
-  if (filterMonth.value) {
-    filtered = filtered.filter(t => t.date.startsWith(filterMonth.value));
-  }
-  return filtered;
+function getFilteredTransactions() {
+  const month = document.getElementById("monthFilter").value;
+  const category = document.getElementById("categoryFilter").value;
+  return transactions.filter(t => {
+    const tMonth = new Date(t.date).getMonth() + 1;
+    const mMatch = !month || tMonth === +month;
+    const cMatch = !category || t.category === category;
+    return mMatch && cMatch;
+  });
 }
 
-function init() {
-  list.innerHTML = '';
-  const filtered = applyFilters();
-  filtered.forEach(addTransactionDOM);
-  updateValues(filtered);
-  updateChart(filtered);
+function populateFilters() {
+  const monthFilter = document.getElementById("monthFilter");
+  const categoryFilter = document.getElementById("categoryFilter");
+  const months = new Set(transactions.map(t => new Date(t.date).getMonth() + 1));
+  const categories = new Set(transactions.map(t => t.category));
+
+  monthFilter.innerHTML = `<option value="">All Months</option>`;
+  months.forEach(m => {
+    monthFilter.innerHTML += `<option value="${m}">Month ${m}</option>`;
+  });
+
+  categoryFilter.innerHTML = `<option value="">All Categories</option>`;
+  categories.forEach(c => {
+    categoryFilter.innerHTML += `<option value="${c}">${c}</option>`;
+  });
 }
 
-init();
+document.getElementById("transaction-form").addEventListener("submit", addTransaction);
+document.getElementById("monthFilter").addEventListener("change", updateUI);
+document.getElementById("categoryFilter").addEventListener("change", updateUI);
+
+// Initial call
+updateUI();
