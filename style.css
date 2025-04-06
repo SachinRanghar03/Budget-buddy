@@ -68,3 +68,11 @@ form input, form select, form button {
 button {
   margin-top: 10px;
 }
+
+#split-members label {
+  margin-right: 10px;
+}
+#ledger-list {
+  margin-top: 10px;
+  padding-left: 20px;
+}
