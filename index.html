@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BudgetBuddy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>💰 BudgetBuddy</h1>
+
+    <div class="balance">
+      <h2>Balance: ₹<span id="balance">0</span></h2>
+    </div>
+
+    <div class="summary">
+      <div>Income: ₹<span id="income">0</span></div>
+      <div>Expense: ₹<span id="expense">0</span></div>
+    </div>
+
+    <form id="transaction-form">
+      <input type="text" id="text" placeholder="Item" required />
+      <input type="number" id="amount" placeholder="Amount" required />
+      <input type="date" id="date" required />
+      <select id="category" required>
+        <option value="">Category</option>
+        <option value="Food">Food</option>
+        <option value="Salary">Salary</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Rent">Rent</option>
+        <option value="Others">Others</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+
+    <div class="filter">
+      <select id="filter-category">
+        <option value="">All Categories</option>
+        <option value="Food">Food</option>
+        <option value="Salary">Salary</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Rent">Rent</option>
+        <option value="Others">Others</option>
+      </select>
+      <input type="month" id="filter-month" />
+    </div>
+
+    <button onclick="exportCSV()">📤 Export CSV</button>
+
+    <ul id="list" class="transactions"></ul>
+
+    <canvas id="chart" width="300" height="300"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="utils.js"></script>
+  <script src="chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
